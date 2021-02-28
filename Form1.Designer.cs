@@ -30,11 +30,10 @@ namespace OOp_1
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -82,6 +81,13 @@ namespace OOp_1
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonOpenFile = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBoxTextFile = new System.Windows.Forms.TextBox();
+            this.buttStopCHA = new System.Windows.Forms.Button();
+            this.buttstartCHA = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.buttraw = new System.Windows.Forms.RadioButton();
+            this.buttscaled = new System.Windows.Forms.RadioButton();
             this.textBoxreadraw = new System.Windows.Forms.TextBox();
             this.textBoxreadstatus = new System.Windows.Forms.TextBox();
             this.textBoxreadscale = new System.Windows.Forms.TextBox();
@@ -89,21 +95,8 @@ namespace OOp_1
             this.buttreadraw = new System.Windows.Forms.Button();
             this.buttreadstatus = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.listBoxVab = new System.Windows.Forms.ListBox();
-            this.listBoxVb = new System.Windows.Forms.ListBox();
-            this.listBoxVa = new System.Windows.Forms.ListBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.textBoxTextFile = new System.Windows.Forms.TextBox();
-            this.textBoxY = new System.Windows.Forms.TextBox();
-            this.textBoxX = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
             this.buttonReadFile = new System.Windows.Forms.Button();
-            this.buttonAddXY = new System.Windows.Forms.Button();
-            this.buttonStart = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.Vba = new System.Windows.Forms.Label();
             this.ComPort = new System.Windows.Forms.TabPage();
             this.buttReceive = new System.Windows.Forms.Button();
             this.buttsend = new System.Windows.Forms.Button();
@@ -125,9 +118,14 @@ namespace OOp_1
             this.lbldataOUTLength = new System.Windows.Forms.Label();
             this.DataOutLength = new System.Windows.Forms.Label();
             this.COM = new System.Windows.Forms.TabControl();
+            this.PB2 = new System.Windows.Forms.ProgressBar();
+            this.PB3 = new System.Windows.Forms.ProgressBar();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.ComPort.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -148,7 +146,7 @@ namespace OOp_1
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1220, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1212, 28);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -300,6 +298,16 @@ namespace OOp_1
             this.panel1.Size = new System.Drawing.Size(1076, 404);
             this.panel1.TabIndex = 13;
             // 
+            // timerSerialReceive
+            // 
+            this.timerSerialReceive.Interval = 1000;
+            this.timerSerialReceive.Tick += new System.EventHandler(this.timerSerialReceive_Tick);
+            // 
+            // timerChartAdd
+            // 
+            this.timerChartAdd.Interval = 1000;
+            this.timerChartAdd.Tick += new System.EventHandler(this.timerChartAdd_Tick);
+            // 
             // printDialog1
             // 
             this.printDialog1.UseEXDialog = true;
@@ -308,9 +316,15 @@ namespace OOp_1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // saveFileDialog2
+            // 
+            this.saveFileDialog2.DefaultExt = "csv";
+            // 
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.Gray;
+            this.tabPage3.Controls.Add(this.label5);
+            this.tabPage3.Controls.Add(this.PB3);
             this.tabPage3.Controls.Add(this.buttonwrite3);
             this.tabPage3.Controls.Add(this.label3);
             this.tabPage3.Controls.Add(this.textBoxpass99);
@@ -332,12 +346,12 @@ namespace OOp_1
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(1212, 627);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "tabPage3";
+            this.tabPage3.Text = "Configuration";
             // 
             // buttonwrite3
             // 
             this.buttonwrite3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonwrite3.Location = new System.Drawing.Point(39, 411);
+            this.buttonwrite3.Location = new System.Drawing.Point(28, 397);
             this.buttonwrite3.Name = "buttonwrite3";
             this.buttonwrite3.Size = new System.Drawing.Size(276, 55);
             this.buttonwrite3.TabIndex = 47;
@@ -349,7 +363,7 @@ namespace OOp_1
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Times New Roman", 13.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(34, 279);
+            this.label3.Location = new System.Drawing.Point(23, 265);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(257, 25);
             this.label3.TabIndex = 46;
@@ -357,7 +371,7 @@ namespace OOp_1
             // 
             // textBoxpass99
             // 
-            this.textBoxpass99.Location = new System.Drawing.Point(364, 273);
+            this.textBoxpass99.Location = new System.Drawing.Point(353, 259);
             this.textBoxpass99.Multiline = true;
             this.textBoxpass99.Name = "textBoxpass99";
             this.textBoxpass99.Size = new System.Drawing.Size(240, 28);
@@ -366,7 +380,7 @@ namespace OOp_1
             // textBoxAH
             // 
             this.textBoxAH.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxAH.Location = new System.Drawing.Point(364, 231);
+            this.textBoxAH.Location = new System.Drawing.Point(353, 217);
             this.textBoxAH.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxAH.Name = "textBoxAH";
             this.textBoxAH.Size = new System.Drawing.Size(240, 28);
@@ -375,7 +389,7 @@ namespace OOp_1
             // textBoxAL
             // 
             this.textBoxAL.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxAL.Location = new System.Drawing.Point(364, 187);
+            this.textBoxAL.Location = new System.Drawing.Point(353, 173);
             this.textBoxAL.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxAL.Name = "textBoxAL";
             this.textBoxAL.Size = new System.Drawing.Size(240, 28);
@@ -384,7 +398,7 @@ namespace OOp_1
             // textBoxURV
             // 
             this.textBoxURV.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxURV.Location = new System.Drawing.Point(364, 150);
+            this.textBoxURV.Location = new System.Drawing.Point(353, 136);
             this.textBoxURV.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxURV.Name = "textBoxURV";
             this.textBoxURV.Size = new System.Drawing.Size(240, 28);
@@ -393,7 +407,7 @@ namespace OOp_1
             // textBoxLRV
             // 
             this.textBoxLRV.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxLRV.Location = new System.Drawing.Point(364, 113);
+            this.textBoxLRV.Location = new System.Drawing.Point(353, 99);
             this.textBoxLRV.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxLRV.Name = "textBoxLRV";
             this.textBoxLRV.Size = new System.Drawing.Size(240, 28);
@@ -402,7 +416,7 @@ namespace OOp_1
             // textBoxTagname
             // 
             this.textBoxTagname.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxTagname.Location = new System.Drawing.Point(364, 76);
+            this.textBoxTagname.Location = new System.Drawing.Point(353, 62);
             this.textBoxTagname.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxTagname.Name = "textBoxTagname";
             this.textBoxTagname.Size = new System.Drawing.Size(240, 28);
@@ -411,7 +425,7 @@ namespace OOp_1
             // buttonRead
             // 
             this.buttonRead.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonRead.Location = new System.Drawing.Point(39, 473);
+            this.buttonRead.Location = new System.Drawing.Point(28, 459);
             this.buttonRead.Margin = new System.Windows.Forms.Padding(4);
             this.buttonRead.Name = "buttonRead";
             this.buttonRead.Size = new System.Drawing.Size(276, 55);
@@ -424,7 +438,7 @@ namespace OOp_1
             // 
             this.labelAH.AutoSize = true;
             this.labelAH.Font = new System.Drawing.Font("Times New Roman", 13.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelAH.Location = new System.Drawing.Point(35, 233);
+            this.labelAH.Location = new System.Drawing.Point(24, 219);
             this.labelAH.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelAH.Name = "labelAH";
             this.labelAH.Size = new System.Drawing.Size(114, 25);
@@ -435,7 +449,7 @@ namespace OOp_1
             // 
             this.labelAL.AutoSize = true;
             this.labelAL.Font = new System.Drawing.Font("Times New Roman", 13.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelAL.Location = new System.Drawing.Point(34, 191);
+            this.labelAL.Location = new System.Drawing.Point(23, 177);
             this.labelAL.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelAL.Name = "labelAL";
             this.labelAL.Size = new System.Drawing.Size(111, 25);
@@ -446,7 +460,7 @@ namespace OOp_1
             // 
             this.labelURV.AutoSize = true;
             this.labelURV.Font = new System.Drawing.Font("Times New Roman", 13.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelURV.Location = new System.Drawing.Point(35, 152);
+            this.labelURV.Location = new System.Drawing.Point(24, 138);
             this.labelURV.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelURV.Name = "labelURV";
             this.labelURV.Size = new System.Drawing.Size(173, 25);
@@ -457,7 +471,7 @@ namespace OOp_1
             // 
             this.labelLRV.AutoSize = true;
             this.labelLRV.Font = new System.Drawing.Font("Times New Roman", 13.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelLRV.Location = new System.Drawing.Point(35, 115);
+            this.labelLRV.Location = new System.Drawing.Point(24, 101);
             this.labelLRV.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLRV.Name = "labelLRV";
             this.labelLRV.Size = new System.Drawing.Size(174, 25);
@@ -468,7 +482,7 @@ namespace OOp_1
             // 
             this.labelTagname.AutoSize = true;
             this.labelTagname.Font = new System.Drawing.Font("Times New Roman", 13.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelTagname.Location = new System.Drawing.Point(35, 78);
+            this.labelTagname.Location = new System.Drawing.Point(24, 64);
             this.labelTagname.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTagname.Name = "labelTagname";
             this.labelTagname.Size = new System.Drawing.Size(90, 25);
@@ -478,7 +492,7 @@ namespace OOp_1
             // buttonSave
             // 
             this.buttonSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonSave.Location = new System.Drawing.Point(328, 473);
+            this.buttonSave.Location = new System.Drawing.Point(317, 459);
             this.buttonSave.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(276, 55);
@@ -490,7 +504,7 @@ namespace OOp_1
             // buttonOpenFile
             // 
             this.buttonOpenFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonOpenFile.Location = new System.Drawing.Point(328, 411);
+            this.buttonOpenFile.Location = new System.Drawing.Point(317, 397);
             this.buttonOpenFile.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOpenFile.Name = "buttonOpenFile";
             this.buttonOpenFile.Size = new System.Drawing.Size(276, 55);
@@ -502,6 +516,13 @@ namespace OOp_1
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Gray;
+            this.tabPage2.Controls.Add(this.label6);
+            this.tabPage2.Controls.Add(this.PB2);
+            this.tabPage2.Controls.Add(this.label4);
+            this.tabPage2.Controls.Add(this.textBoxTextFile);
+            this.tabPage2.Controls.Add(this.buttStopCHA);
+            this.tabPage2.Controls.Add(this.buttstartCHA);
+            this.tabPage2.Controls.Add(this.groupBox2);
             this.tabPage2.Controls.Add(this.textBoxreadraw);
             this.tabPage2.Controls.Add(this.textBoxreadstatus);
             this.tabPage2.Controls.Add(this.textBoxreadscale);
@@ -509,27 +530,90 @@ namespace OOp_1
             this.tabPage2.Controls.Add(this.buttreadraw);
             this.tabPage2.Controls.Add(this.buttreadstatus);
             this.tabPage2.Controls.Add(this.button1);
-            this.tabPage2.Controls.Add(this.listBoxVab);
-            this.tabPage2.Controls.Add(this.listBoxVb);
-            this.tabPage2.Controls.Add(this.listBoxVa);
             this.tabPage2.Controls.Add(this.chart1);
-            this.tabPage2.Controls.Add(this.textBoxTextFile);
-            this.tabPage2.Controls.Add(this.textBoxY);
-            this.tabPage2.Controls.Add(this.textBoxX);
-            this.tabPage2.Controls.Add(this.label13);
-            this.tabPage2.Controls.Add(this.label15);
             this.tabPage2.Controls.Add(this.buttonReadFile);
-            this.tabPage2.Controls.Add(this.buttonAddXY);
-            this.tabPage2.Controls.Add(this.buttonStart);
-            this.tabPage2.Controls.Add(this.label14);
-            this.tabPage2.Controls.Add(this.label12);
-            this.tabPage2.Controls.Add(this.Vba);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1212, 627);
+            this.tabPage2.Size = new System.Drawing.Size(1204, 626);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.Text = "Raw/Scaled";
+            this.tabPage2.Click += new System.EventHandler(this.tabPage2_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(479, 95);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(92, 20);
+            this.label4.TabIndex = 49;
+            this.label4.Text = "Graph data";
+            // 
+            // textBoxTextFile
+            // 
+            this.textBoxTextFile.Location = new System.Drawing.Point(483, 131);
+            this.textBoxTextFile.Multiline = true;
+            this.textBoxTextFile.Name = "textBoxTextFile";
+            this.textBoxTextFile.Size = new System.Drawing.Size(100, 132);
+            this.textBoxTextFile.TabIndex = 48;
+
+            // 
+            // buttStopCHA
+            // 
+            this.buttStopCHA.Location = new System.Drawing.Point(361, 407);
+            this.buttStopCHA.Name = "buttStopCHA";
+            this.buttStopCHA.Size = new System.Drawing.Size(104, 40);
+            this.buttStopCHA.TabIndex = 47;
+            this.buttStopCHA.Text = "Stop";
+            this.buttStopCHA.UseVisualStyleBackColor = true;
+            this.buttStopCHA.Click += new System.EventHandler(this.buttStopCHA_Click);
+            // 
+            // buttstartCHA
+            // 
+            this.buttstartCHA.Location = new System.Drawing.Point(225, 407);
+            this.buttstartCHA.Name = "buttstartCHA";
+            this.buttstartCHA.Size = new System.Drawing.Size(104, 40);
+            this.buttstartCHA.TabIndex = 46;
+            this.buttstartCHA.Text = "Start";
+            this.buttstartCHA.UseVisualStyleBackColor = true;
+            this.buttstartCHA.Click += new System.EventHandler(this.buttstartCHA_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.buttraw);
+            this.groupBox2.Controls.Add(this.buttscaled);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox2.Location = new System.Drawing.Point(198, 270);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(200, 100);
+            this.groupBox2.TabIndex = 45;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Data";
+            // 
+            // buttraw
+            // 
+            this.buttraw.AutoSize = true;
+            this.buttraw.Location = new System.Drawing.Point(22, 21);
+            this.buttraw.Name = "buttraw";
+            this.buttraw.Size = new System.Drawing.Size(63, 24);
+            this.buttraw.TabIndex = 43;
+            this.buttraw.TabStop = true;
+            this.buttraw.Text = "Raw";
+            this.buttraw.UseVisualStyleBackColor = true;
+            this.buttraw.CheckedChanged += new System.EventHandler(this.buttraw_CheckedChanged);
+            // 
+            // buttscaled
+            // 
+            this.buttscaled.AutoSize = true;
+            this.buttscaled.Location = new System.Drawing.Point(22, 48);
+            this.buttscaled.Name = "buttscaled";
+            this.buttscaled.Size = new System.Drawing.Size(81, 24);
+            this.buttscaled.TabIndex = 44;
+            this.buttscaled.TabStop = true;
+            this.buttscaled.Text = "Scaled";
+            this.buttscaled.UseVisualStyleBackColor = true;
+            this.buttscaled.CheckedChanged += new System.EventHandler(this.buttscaled_CheckedChanged);
             // 
             // textBoxreadraw
             // 
@@ -538,7 +622,6 @@ namespace OOp_1
             this.textBoxreadraw.Name = "textBoxreadraw";
             this.textBoxreadraw.Size = new System.Drawing.Size(155, 55);
             this.textBoxreadraw.TabIndex = 42;
-            this.textBoxreadraw.TextChanged += new System.EventHandler(this.textBoxreadraw_TextChanged);
             // 
             // textBoxreadstatus
             // 
@@ -555,7 +638,6 @@ namespace OOp_1
             this.textBoxreadscale.Name = "textBoxreadscale";
             this.textBoxreadscale.Size = new System.Drawing.Size(155, 55);
             this.textBoxreadscale.TabIndex = 40;
-            this.textBoxreadscale.TextChanged += new System.EventHandler(this.textBoxreadscale_TextChanged);
             // 
             // buttreadscaled
             // 
@@ -601,165 +683,41 @@ namespace OOp_1
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // listBoxVab
-            // 
-            this.listBoxVab.FormattingEnabled = true;
-            this.listBoxVab.ItemHeight = 16;
-            this.listBoxVab.Location = new System.Drawing.Point(310, 293);
-            this.listBoxVab.Name = "listBoxVab";
-            this.listBoxVab.Size = new System.Drawing.Size(120, 212);
-            this.listBoxVab.TabIndex = 33;
-            // 
-            // listBoxVb
-            // 
-            this.listBoxVb.FormattingEnabled = true;
-            this.listBoxVb.ItemHeight = 16;
-            this.listBoxVb.Location = new System.Drawing.Point(162, 293);
-            this.listBoxVb.Name = "listBoxVb";
-            this.listBoxVb.Size = new System.Drawing.Size(120, 212);
-            this.listBoxVb.TabIndex = 32;
-            // 
-            // listBoxVa
-            // 
-            this.listBoxVa.FormattingEnabled = true;
-            this.listBoxVa.ItemHeight = 16;
-            this.listBoxVa.Location = new System.Drawing.Point(24, 293);
-            this.listBoxVa.Name = "listBoxVa";
-            this.listBoxVa.Size = new System.Drawing.Size(120, 212);
-            this.listBoxVa.TabIndex = 31;
-            // 
             // chart1
             // 
-            chartArea4.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            legend4.Title = "Test Legend";
-            this.chart1.Legends.Add(legend4);
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            legend2.Title = "Test Legend";
+            this.chart1.Legends.Add(legend2);
             this.chart1.Location = new System.Drawing.Point(644, 131);
             this.chart1.Margin = new System.Windows.Forms.Padding(4);
             this.chart1.Name = "chart1";
-            series10.ChartArea = "ChartArea1";
-            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series10.Legend = "Legend1";
-            series10.Name = "SeriesVa";
-            series11.ChartArea = "ChartArea1";
-            series11.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series11.Legend = "Legend1";
-            series11.Name = "SeriesVb";
-            series12.ChartArea = "ChartArea1";
-            series12.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series12.Legend = "Legend1";
-            series12.Name = "SeriesVab";
-            this.chart1.Series.Add(series10);
-            this.chart1.Series.Add(series11);
-            this.chart1.Series.Add(series12);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Legend = "Legend1";
+            series3.Name = "Raw";
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Legend = "Legend1";
+            series4.Name = "Scaled";
+            this.chart1.Series.Add(series3);
+            this.chart1.Series.Add(series4);
             this.chart1.Size = new System.Drawing.Size(545, 374);
             this.chart1.TabIndex = 30;
             this.chart1.TabStop = false;
             this.chart1.Text = "chart1";
             // 
-            // textBoxTextFile
-            // 
-            this.textBoxTextFile.Location = new System.Drawing.Point(473, 293);
-            this.textBoxTextFile.Multiline = true;
-            this.textBoxTextFile.Name = "textBoxTextFile";
-            this.textBoxTextFile.Size = new System.Drawing.Size(120, 212);
-            this.textBoxTextFile.TabIndex = 29;
-            // 
-            // textBoxY
-            // 
-            this.textBoxY.Location = new System.Drawing.Point(195, 551);
-            this.textBoxY.Name = "textBoxY";
-            this.textBoxY.Size = new System.Drawing.Size(105, 22);
-            this.textBoxY.TabIndex = 20;
-            // 
-            // textBoxX
-            // 
-            this.textBoxX.Location = new System.Drawing.Point(195, 523);
-            this.textBoxX.Name = "textBoxX";
-            this.textBoxX.Size = new System.Drawing.Size(105, 22);
-            this.textBoxX.TabIndex = 21;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(119, 523);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(25, 17);
-            this.label13.TabIndex = 26;
-            this.label13.Text = "X :";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(119, 556);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(25, 17);
-            this.label15.TabIndex = 27;
-            this.label15.Text = "Y :";
-            // 
             // buttonReadFile
             // 
             this.buttonReadFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonReadFile.Location = new System.Drawing.Point(781, 517);
+            this.buttonReadFile.Location = new System.Drawing.Point(644, 512);
             this.buttonReadFile.Name = "buttonReadFile";
             this.buttonReadFile.Size = new System.Drawing.Size(131, 41);
             this.buttonReadFile.TabIndex = 24;
             this.buttonReadFile.Text = "Read File";
             this.buttonReadFile.UseVisualStyleBackColor = true;
             this.buttonReadFile.Click += new System.EventHandler(this.buttonReadFile_Click_1);
-            // 
-            // buttonAddXY
-            // 
-            this.buttonAddXY.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonAddXY.Location = new System.Drawing.Point(644, 517);
-            this.buttonAddXY.Name = "buttonAddXY";
-            this.buttonAddXY.Size = new System.Drawing.Size(131, 41);
-            this.buttonAddXY.TabIndex = 23;
-            this.buttonAddXY.Text = "Add Point";
-            this.buttonAddXY.UseVisualStyleBackColor = true;
-            this.buttonAddXY.Click += new System.EventHandler(this.buttonAddXY_Click_1);
-            // 
-            // buttonStart
-            // 
-            this.buttonStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonStart.Location = new System.Drawing.Point(921, 517);
-            this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(131, 41);
-            this.buttonStart.TabIndex = 25;
-            this.buttonStart.Text = "Start Auto";
-            this.buttonStart.UseVisualStyleBackColor = true;
-            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click_1);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(158, 257);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(38, 25);
-            this.label14.TabIndex = 19;
-            this.label14.Text = "Vb";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(20, 257);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(35, 25);
-            this.label12.TabIndex = 17;
-            this.label12.Text = "Va";
-            // 
-            // Vba
-            // 
-            this.Vba.AutoSize = true;
-            this.Vba.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Vba.Location = new System.Drawing.Point(306, 257);
-            this.Vba.Name = "Vba";
-            this.Vba.Size = new System.Drawing.Size(48, 25);
-            this.Vba.TabIndex = 18;
-            this.Vba.Text = "Vba";
             // 
             // ComPort
             // 
@@ -773,9 +731,9 @@ namespace OOp_1
             this.ComPort.Location = new System.Drawing.Point(4, 25);
             this.ComPort.Name = "ComPort";
             this.ComPort.Padding = new System.Windows.Forms.Padding(3);
-            this.ComPort.Size = new System.Drawing.Size(1212, 627);
+            this.ComPort.Size = new System.Drawing.Size(1011, 418);
             this.ComPort.TabIndex = 0;
-            this.ComPort.Text = "tabPage1";
+            this.ComPort.Text = "COM";
             // 
             // buttReceive
             // 
@@ -841,6 +799,7 @@ namespace OOp_1
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(266, 33);
             this.progressBar1.TabIndex = 2;
+
             // 
             // label2
             // 
@@ -927,7 +886,6 @@ namespace OOp_1
             this.BoxDataOut.Name = "BoxDataOut";
             this.BoxDataOut.Size = new System.Drawing.Size(351, 22);
             this.BoxDataOut.TabIndex = 7;
-            this.BoxDataOut.TextChanged += new System.EventHandler(this.BoxDataOut_TextChanged);
             // 
             // BoxdataInn
             // 
@@ -976,15 +934,48 @@ namespace OOp_1
             this.COM.Location = new System.Drawing.Point(0, 28);
             this.COM.Name = "COM";
             this.COM.SelectedIndex = 0;
-            this.COM.Size = new System.Drawing.Size(1220, 656);
+            this.COM.Size = new System.Drawing.Size(1212, 655);
             this.COM.TabIndex = 29;
-            this.COM.SelectedIndexChanged += new System.EventHandler(this.COM_SelectedIndexChanged);
+            // 
+            // PB2
+            // 
+            this.PB2.Location = new System.Drawing.Point(152, 580);
+            this.PB2.Name = "PB2";
+            this.PB2.Size = new System.Drawing.Size(100, 23);
+            this.PB2.TabIndex = 50;
+            // 
+            // PB3
+            // 
+            this.PB3.Location = new System.Drawing.Point(152, 580);
+            this.PB3.Name = "PB3";
+            this.PB3.Size = new System.Drawing.Size(100, 23);
+            this.PB3.TabIndex = 48;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(24, 579);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(107, 24);
+            this.label5.TabIndex = 49;
+            this.label5.Text = "Connection";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(19, 579);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(107, 24);
+            this.label6.TabIndex = 51;
+            this.label6.Text = "Connection";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1220, 684);
+            this.ClientSize = new System.Drawing.Size(1212, 683);
             this.Controls.Add(this.COM);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
@@ -998,6 +989,8 @@ namespace OOp_1
             this.tabPage3.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ComPort.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
@@ -1063,21 +1056,8 @@ namespace OOp_1
         private System.Windows.Forms.Button buttonOpenFile;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ListBox listBoxVab;
-        private System.Windows.Forms.ListBox listBoxVb;
-        private System.Windows.Forms.ListBox listBoxVa;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
-        private System.Windows.Forms.TextBox textBoxTextFile;
-        private System.Windows.Forms.TextBox textBoxY;
-        private System.Windows.Forms.TextBox textBoxX;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Button buttonReadFile;
-        private System.Windows.Forms.Button buttonAddXY;
-        private System.Windows.Forms.Button buttonStart;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label Vba;
         private System.Windows.Forms.TabPage ComPort;
         private System.Windows.Forms.Button buttReceive;
         private System.Windows.Forms.Button buttsend;
@@ -1105,6 +1085,17 @@ namespace OOp_1
         private System.Windows.Forms.Button buttreadscaled;
         private System.Windows.Forms.Button buttreadraw;
         private System.Windows.Forms.Button buttreadstatus;
+        private System.Windows.Forms.RadioButton buttscaled;
+        private System.Windows.Forms.RadioButton buttraw;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button buttstartCHA;
+        private System.Windows.Forms.Button buttStopCHA;
+        private System.Windows.Forms.TextBox textBoxTextFile;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ProgressBar PB3;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ProgressBar PB2;
     }
 }
 

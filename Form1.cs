@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.IO;
@@ -15,14 +9,7 @@ namespace OOp_1
 {
     public partial class Form1 : Form
     {
-        string textFileContent;
-        private string passwordString;
-        string writeString;
-        string dataOUT;
-        string sendWith;
-        string DataIn;
-        StreamWriter objStreamWriter;
-        string pathFile = @"C:\Users\kaspe\OneDrive\Skrivebord\My sourses\SerialData.";
+
 
         public Form1()
         {
@@ -32,33 +19,20 @@ namespace OOp_1
         string receivedConfig = "0;1;2;3;4";
         string[] instrumentConfigs = { };
         string instrumetConfigs2;
-        double chartXValue = 0.0;
-        double chartYValue = 0.0;
+
         List<MeasurementPoint> AllMeasurementPoints = new List<MeasurementPoint>();
+        List<MeasurementPointscaled> AllMeasurementPointsscaled = new List<MeasurementPointscaled>();
         string leggsammen()
         {
             return string.Format("{0};{1};{2};{3};{4}", textBoxTagname.Text, textBoxLRV.Text
                                             , textBoxURV.Text, textBoxAL.Text, textBoxAH.Text);
         }
 
-        /*string Password = "Kasper";
-        */
-        private object saveFileDialog1CSV;
-        private IEnumerable<MeasurementPoint> allMeasuredPoints;
-        private object saveFileDialogCSV;
 
         private void Form1_Load(object sender, EventArgs e)
         {
             string[] Ports = SerialPort.GetPortNames();
             BoxCOMPORT.Items.AddRange(Ports);
-
-
-
-
-
-            sendWith = "Both";
-
-
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -70,6 +44,8 @@ namespace OOp_1
 
                 serialPort1.Open();
                 progressBar1.Value = 100;
+                PB2.Value = 100;
+                PB3.Value = 100;
 
 
             }
@@ -77,6 +53,14 @@ namespace OOp_1
             catch (Exception err)
             {
                 MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+
+            }
+            finally
+            {
+                if (progressBar1.Value == 100)
+
+                    MessageBox.Show("Connection succsessful");
 
 
             }
@@ -89,7 +73,8 @@ namespace OOp_1
             {
                 serialPort1.Close();
                 progressBar1.Value = 0;
-
+                PB2.Value = 0;
+                PB3.Value = 0;
 
             }
         }
@@ -160,68 +145,12 @@ namespace OOp_1
             if (printDialog1.ShowDialog() == DialogResult.OK) ;
         }
 
-        private void buttonMessageBox_Click(object sender, EventArgs e)
-        {
-            //MessageBox.Show() Method variabels:
-            string message = "Specific message about some operation. Cancel this operation?";
-            string caption = "Continue with operation?";
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-            MessageBoxIcon icon = MessageBoxIcon.Warning;
-            DialogResult result;
-
-
-            result = MessageBox.Show(this, message, caption, buttons, icon);
-            if (result == DialogResult.Yes)
-            {
-                // Closes the parent form.
-                MessageBox.Show("Yahoo!");
-            }
-        }
-
-        private void buttonAddXY_Click(object sender, EventArgs e)
-        {
-            /*
-            FileStream fileWrite = new FileStream(@"C:\tmp\test.txt", FileMode.Create, FileAccess.Write, FileShare.None);
-            var textToWrite = "Xvalue;Yvalue\r\n10.0;10.0\r\n11.0;11.0\r\n";
-            byte[] writeArray = Encoding.UTF8.GetBytes(textToWrite);
-            fileWrite.Write(writeArray, 0, textToWrite.Length);
-            fileWrite.Close();
-            
-            string[] lines = { "Xvalue; Yvalue", "10.0; 10.0", "11.0; 11.0" };
-            StreamWriter outputFile = new StreamWriter(@"C:\tmp\Test.txt");
-            foreach (string line in lines)
-            {
-                outputFile.WriteLine(line);
-            }
-            outputFile.Close();
-            
-
-            string[] lines = { "Xvalue; Yvalue", "11.0; 11.0", "12.0; 12.0" };
-            File.WriteAllLines(@"C:\tmp\Test.txt", lines);
-           
-
-
-
-            FileStream readTestTextFile = new FileStream(@"C:\tmp\Test.txt", FileMode.Open, FileAccess.Read, FileShare.Read);
-
-            */
-            chart1.Series[0].Points.AddXY(Convert.ToDouble(textBoxX.Text),
-                                          Convert.ToDouble(textBoxY.Text));
-            textBoxX.Text = textBoxY.Text = "";
-        }
 
 
         private void buttonReadFile_Click(object sender, EventArgs e)
         {
             textBoxTextFile.Clear();
-            /*
-            var inputFile = new StreamReader(@"C:\tmp\Test.txt");
 
-            // Read the stream as a string, and write the string to textbox.
-            textBoxTextFile.Text = inputFile.ReadToEnd();
-            inputFile.Close();
-            */
-            //string fileName = "";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 foreach (string line in File.ReadLines(openFileDialog1.FileName))
@@ -240,7 +169,7 @@ namespace OOp_1
             string[] textFileContent = { "Hello", "World" };
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                //Get the path of specified file
+
                 fileName = saveFileDialog1.FileName;
                 File.WriteAllLines(fileName, textFileContent);
 
@@ -251,8 +180,15 @@ namespace OOp_1
         private void timerChartAdd_Tick(object sender, EventArgs e)
         {
             if (serialPort1.IsOpen)
-            {
-                serialPort1.WriteLine("readanalog");
+
+            {  if (buttraw.Checked)
+                    serialPort1.WriteLine("readraw");
+               if (buttscaled.Checked)
+                    serialPort1.WriteLine("readscaled");
+
+
+
+
                 timerSerialReceive.Enabled = true;
                 timerChartAdd.Enabled = false;
             }
@@ -267,68 +203,117 @@ namespace OOp_1
         {
             if (serialPort1.BytesToRead > 0)
             {
-                string availableData = "";
-                availableData += serialPort1.ReadExisting().ToString();
-                string[] analogReadings = availableData.Split(';');
-                textBoxTextFile.AppendText(availableData);
-                if (analogReadings.Length == 4)
+                if (buttraw.Checked)
                 {
-                    listBoxVa.Items.Add(analogReadings[0]);
-                    chart1.Series[0].Points.AddXY(Convert.ToDouble(listBoxVa.Items.Count - 1),
-                                                   Convert.ToDouble(listBoxVa.Items[listBoxVa.Items.Count - 1]));
-                    listBoxVb.Items.Add(analogReadings[1]);
-                    chart1.Series[1].Points.AddXY(Convert.ToDouble(listBoxVb.Items.Count - 1),
-                               Convert.ToDouble(listBoxVb.Items[listBoxVb.Items.Count - 1]));
-                    listBoxVab.Items.Add(analogReadings[2]);
-                    chart1.Series[2].Points.AddXY(Convert.ToDouble(listBoxVab.Items.Count - 1),
-                                                  Convert.ToDouble(listBoxVab.Items[listBoxVa.Items.Count - 1]));
-                }
+                    MeasurementPoint measuredPoint;
+                    string availableData = "";
+                    availableData += serialPort1.ReadExisting().ToString();
 
-                timerChartAdd.Enabled = true;
-                timerSerialReceive.Enabled = false;
+                    textBoxTextFile.AppendText(availableData + "\r\n");
+                    measuredPoint = new MeasurementPoint(DateTime.Now.ToLongTimeString(), int.Parse(availableData));
+
+
+                    if (measuredPoint != null)
+                    {
+                        AllMeasurementPoints.Add(measuredPoint);
+                    }
+
+
+                    chart1.Series[0].Points.AddXY(measuredPoint.time, measuredPoint.raw);
+
+
+
+                    timerChartAdd.Enabled = true;
+                    timerSerialReceive.Enabled = false;
+                }
+                if (buttscaled.Checked)
+                {
+                    MeasurementPointscaled measuredPoint;
+                    string availableData = "";
+                    availableData += serialPort1.ReadExisting().ToString();
+
+                    textBoxTextFile.AppendText(availableData + "\r\n");
+                    measuredPoint = new MeasurementPointscaled(DateTime.Now.ToLongTimeString(), string.Format(availableData));
+
+
+                    if (measuredPoint != null)
+                    {
+                        AllMeasurementPointsscaled.Add(measuredPoint);
+                    }
+
+
+                    chart1.Series[1].Points.AddXY(measuredPoint.time, measuredPoint.scaled);
+
+
+
+                    timerChartAdd.Enabled = true;
+                    timerSerialReceive.Enabled = false;
+                }
+                
             }
         }
 
 
         public class MeasurementPoint
         {
-            //The objects variables
-            //{get; set;} makes it possible to both change the variable(set) and read the variable(get)
-            //It is possible to remove either get and set or both to make the object more rigid.
+            
             public String time { get; set; }
-            public int va { get; set; }
-            public int vb { get; set; }
-            public int vab { get; set; }
-            //The constructor of the object Needs to be called when you want to create a new object of this type
-            public MeasurementPoint(String time, int va, int vb, int vab)
+            public int raw { get; set; }
+
+
+    
+            public MeasurementPoint(String time, int raw)
             {
-                //"this" referes to the objects variable. 
-                //It is needed because the variables sent to the constructor and the objects variables are named the same. 
+
                 this.time = time;
-                this.va = va;
-                this.vb = vb;
-                this.vab = vab;
+                this.raw = raw;
+
             }
-            //overrides the base object ToString(). makes it possible to decide what is printed when ToString is called.
+
             public override string ToString()
             {
-                return time + ";" + va + ";" + vb + ";" + vab;
+                return time + ";" + raw; 
+
+            }
+        }
+        public class MeasurementPointscaled
+        {
+
+            public String time { get; set; }
+
+            public string scaled { get; set; }
+
+
+            public MeasurementPointscaled(String time, string scaled)
+            {
+
+
+                this.time = time;
+                this.scaled = scaled;
+            }
+
+            public override string ToString()
+            {
+
+                return time + ";" + scaled;
             }
         }
 
         public class Instrument
         {
-            //class body
 
-            //Field declaration
             private int measurement;
+            private float MeasurementPointscaled;
 
-            //A constructor
             public Instrument(int measurement)
             {
                 this.measurement = measurement;
             }
-            //Another constructor
+            public Instrument(float MeasurementPointscaled)
+            {
+                this.MeasurementPointscaled = MeasurementPointscaled;
+            }
+
             public Instrument(string tagname, string unit, double lrv, double urv)
             {
                 this.tagname = tagname;
@@ -337,7 +322,7 @@ namespace OOp_1
                 this.urv = urv;
             }
 
-            //Properties Definitions
+
             public string tagname
             {
                 get { return tagname; }
@@ -348,10 +333,7 @@ namespace OOp_1
             public double urv { get; set; }
 
             //Method declaration
-            public double Scaled()
-            {
-                return measurement / 10.0;
-            }
+            
 
         }
 
@@ -465,7 +447,7 @@ namespace OOp_1
             {
                 using (StreamWriter streamWritePoints = new StreamWriter(saveFileDialog2.FileName))
 
-                    foreach (MeasurementPoint point in allMeasuredPoints)
+                    foreach (MeasurementPoint point in AllMeasurementPoints)
                     {
                         streamWritePoints.WriteLine(point.ToString());
                     }
@@ -474,18 +456,9 @@ namespace OOp_1
         }
 
 
-        private void buttonStart_Click_1(object sender, EventArgs e)
-        {
-            timerChartAdd.Enabled = true;
-        }
 
 
-        private void buttonAddXY_Click_1(object sender, EventArgs e)
-        {
-            chart1.Series[0].Points.AddXY(Convert.ToDouble(textBoxX.Text),
-                                         Convert.ToDouble(textBoxY.Text));
-            textBoxX.Text = textBoxY.Text = "";
-        }
+       
 
         private void buttonRead_Click_1(object sender, EventArgs e)
         {
@@ -518,47 +491,48 @@ namespace OOp_1
             if (saveFileDialogConfig.ShowDialog() == DialogResult.OK)
             {
 
-                File.WriteAllText(saveFileDialogConfig.FileName, string.Join(";", receivedConfig));
+                File.WriteAllText(saveFileDialogConfig.FileName, string.Join(";", textBoxTagname.Text,textBoxLRV.Text, textBoxURV.Text
+                    , textBoxAL.Text, textBoxAH.Text));
             }
         }
 
         private void buttonOpenFile_Click_1(object sender, EventArgs e)
         {
-            var fileContent = string.Empty;
-            var filePath = string.Empty;
+            
+            var filename = string.Empty;
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.InitialDirectory = "c:\\";
-                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
+                
+                openFileDialog.FileName = "";
                 openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    //Get the path of specified file
-                    filePath = openFileDialog.FileName;
+                    
+                    receivedConfig = File.ReadAllText(openFileDialog.FileName);
+                    instrumentConfigs = receivedConfig.Split(';');
+                    TextBox[] textboxes = { textBoxTagname,
+                                    textBoxLRV,
+                                    textBoxURV,
+                                    textBoxAL,
+                                    textBoxAH,
+            };
+                    textBoxTagname.Text = instrumentConfigs[0];
+                    textBoxLRV.Text = instrumentConfigs[1];
+                    textBoxURV.Text = instrumentConfigs[2];
+                    textBoxAL.Text = instrumentConfigs[3];
+                    textBoxAH.Text = instrumentConfigs[4];
 
-                    //Read the contents of the file into a stream
-                    var fileStream = openFileDialog.OpenFile();
-
-                    using (StreamReader reader = new StreamReader(fileStream))
-                    {
-                        fileContent = reader.ReadToEnd();
-                    }
                 }
             }
 
-            MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
-        }
-
-
-
-
-        private void textBoxInput1_TextChanged_1(object sender, EventArgs e)
-        {
 
         }
+
+
+
 
         private void buttonReadFile_Click_1(object sender, EventArgs e)
         {
@@ -590,6 +564,8 @@ namespace OOp_1
 
                 serialPort1.Open();
                 progressBar1.Value = 100;
+                PB2.Value = 100;
+                PB3.Value = 100;
 
 
             }
@@ -598,6 +574,14 @@ namespace OOp_1
             {
                 MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+
+            }
+            finally
+            {
+                if (progressBar1.Value == 100) 
+                
+                MessageBox.Show("Connection succsessful");
+               
 
             }
         }
@@ -610,6 +594,8 @@ namespace OOp_1
             {
                 serialPort1.Close();
                 progressBar1.Value = 0;
+                PB2.Value = 0;
+                PB3.Value = 0;
 
 
             }
@@ -650,11 +636,6 @@ namespace OOp_1
             {
                 BoxdataInn.Text = serialPort1.ReadExisting();
             }
-
-
-
-
-
 
 
         }
@@ -794,6 +775,9 @@ namespace OOp_1
             if (serialPort1.IsOpen)
 
             {
+                buttStopCHA.PerformClick();
+                
+
                 try
                 {
                     serialPort1.Write("readstatus");
@@ -803,7 +787,7 @@ namespace OOp_1
                     int writeSuccess = int.Parse(textBoxreadstatus.Text);
                     if (writeSuccess == 0)
                     {
-                        MessageBox.Show("OK");
+                        MessageBox.Show(" Everythis is OK");
                     }
                     else
                     {
@@ -819,7 +803,7 @@ namespace OOp_1
                     }
                     if (writeSuccess == 2)
                     {
-                        MessageBox.Show("AlarmL");
+                        MessageBox.Show("AlarmLow");
                     }
                     else
                     {
@@ -827,7 +811,7 @@ namespace OOp_1
                     }
                     if (writeSuccess == 3)
                     {
-                        MessageBox.Show("AlarmH");
+                        MessageBox.Show("AlarmHigh");
                     }
                     else
                     {
@@ -839,6 +823,10 @@ namespace OOp_1
                 {
 
                     MessageBox.Show("Configuration write error.");
+                }
+                finally 
+                {
+                    buttstartCHA.PerformClick();
                 }
             }
 
@@ -855,15 +843,7 @@ namespace OOp_1
 
         }
 
-        private void textBoxreadraw_TextChanged(object sender, EventArgs e)
-        {
 
-        }
-
-        private void textBoxreadscale_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void buttreadscale_Click(object sender, EventArgs e)
         {
@@ -873,15 +853,44 @@ namespace OOp_1
             textBoxreadscale.Text = serialPort1.ReadExisting();
         }
 
-        private void COM_SelectedIndexChanged(object sender, EventArgs e)
+
+
+        private void tabPage2_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void BoxDataOut_TextChanged(object sender, EventArgs e)
+        private void buttraw_CheckedChanged(object sender, EventArgs e)
+        {
+            if (buttraw.Checked)
+            timerChartAdd.Enabled = true;
+        }
+
+        private void buttscaled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (buttscaled.Checked)
+                timerChartAdd.Enabled = true;
+        }
+
+
+
+        private void buttstartCHA_Click(object sender, EventArgs e)
+        {
+            timerChartAdd.Enabled = true;
+            timerSerialReceive.Enabled = false;
+        }
+
+        private void buttStopCHA_Click(object sender, EventArgs e)
         {
 
+            timerChartAdd.Enabled = false;
+            timerSerialReceive.Enabled = false;
+            Thread.Sleep(1000);
+            string lastReading = serialPort1.ReadExisting();
+            
         }
+
+
     }
 }
     
